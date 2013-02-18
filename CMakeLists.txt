@@ -26,7 +26,7 @@ endforeach(lib)
 set(LIBS ${LIBS} ${LLVM_LIBS})
 include_directories(${LLVM_PREFIX}/include)
 
-set(OBJCTAGS_PROGRAM_VERSION 0.0.1)
+set(OBJCTAGS_PROGRAM_VERSION 0.0.2)
 configure_file(src/Defines.h.in ${CMAKE_CURRENT_BINARY_DIR}/Defines.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
