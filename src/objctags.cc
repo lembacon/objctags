@@ -54,7 +54,7 @@ static void usage(void) {
   os << "Usage: " << OBJCTAGS_PROGRAM_NAME << " [options] [file(s)]\n";
   os << "\n";
   os << "  -f, --file [FILE]  Output file. '-' for stdout.\n";
-  os << "  -r, --recursive    Recursively search for source files\n";
+  os << "  -R, --recursive    Recursively search for source files\n";
   os << "      --vim-conf     Show vim conf for TagBar\n";
   os << "  -v, --version      Show version\n";
   os << "  -h, --help         Show help\n";
@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
         file = optarg;
         break;
 
-      case 'r':
+      case 'R':
         flag_recursive = 1;
         break;
 
