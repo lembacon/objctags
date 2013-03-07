@@ -29,27 +29,30 @@
 #include <vector>
 
 namespace objctags {
-  class Configuration {
-  private:
-    std::string _sourceType;
-    std::string _sysroot;
-    std::vector<std::string> _searchPaths;
-    std::vector<std::string> _defines;
-  public:
-    void setSourceType(const std::string &sourceType);
-    void setSysroot(const std::string &sysroot);
-    void addSearchPath(const std::string &path);
-    void addDefine(const std::string &key, const std::string &value = "");
 
-    std::vector<std::string> getClangArgs() const;
-  };
+class Configuration {
+public:
+  void setSourceType(const std::string &sourceType);
+  void setSysroot(const std::string &sysroot);
+  void addSearchPath(const std::string &path);
+  void addDefine(const std::string &key, const std::string &value = "");
 
-  std::string getSourceTypeForFileName(const std::string &fileName);
-  std::vector<std::string> recursivelySearchSourceFiles(const std::string &directory);
-  std::string expandPath(const std::string &path);
-  std::string readFile(const std::string &fileName);
+  std::vector<std::string> getClangArgs() const;
 
-  std::string tagbarConfigurations();
-}
+private:
+  std::string _sourceType;
+  std::string _sysroot;
+  std::vector<std::string> _searchPaths;
+  std::vector<std::string> _defines;
+};
+
+std::string getSourceTypeForFileName(const std::string &fileName);
+std::vector<std::string> recursivelySearchSourceFiles(const std::string &directory);
+std::string expandPath(const std::string &path);
+std::string readFile(const std::string &fileName);
+
+std::string tagbarConfigurations();
+
+} // end namespace objctags
 
 #endif /* __objctags_Configuration_h__ */

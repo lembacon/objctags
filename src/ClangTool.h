@@ -31,10 +31,12 @@
 #include <clang/Frontend/FrontendAction.h>
 
 namespace objctags {
-  bool runClangToolOnCodeWithArgs(clang::FrontendAction *action,
-                                  const llvm::Twine &code,
-                                  const std::vector<std::string> &args,
-                                  const llvm::Twine &fileName);
-}
+
+bool runClangToolOnCodeWithArgs(clang::FrontendAction *action,
+                                const llvm::Twine &code,
+                                const std::vector<std::string> &args,
+                                const llvm::Twine &fileName);
+
+} // end namespace objctags
 
 #endif /* __objctags_ClangTool_h__ */

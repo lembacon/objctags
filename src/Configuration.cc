@@ -33,159 +33,176 @@
 #include "Configuration.h"
 
 namespace objctags {
-  void Configuration::setSourceType(const std::string &sourceType) {
-    _sourceType = sourceType;
-  }
 
-  void Configuration::setSysroot(const std::string &sysroot) {
-    _sysroot = sysroot;
-  }
+void Configuration::setSourceType(const std::string &sourceType)
+{
+  _sourceType = sourceType;
+}
 
-  void Configuration::addSearchPath(const std::string &path) {
-    if (!path.empty()) {
-      _searchPaths.push_back("-I" + path);
+void Configuration::setSysroot(const std::string &sysroot)
+{
+  _sysroot = sysroot;
+}
+
+void Configuration::addSearchPath(const std::string &path)
+{
+  if (!path.empty()) {
+    _searchPaths.push_back("-I" + path);
+  }
+}
+
+void Configuration::addDefine(const std::string &key, const std::string &value)
+{
+  if (!key.empty()) {
+    if (!value.empty()) {
+      _defines.push_back("-D" + key + "=" + value);
     }
-  }
-
-  void Configuration::addDefine(const std::string &key, const std::string &value) {
-    if (!key.empty()) {
-      if (!value.empty()) {
-        _defines.push_back("-D" + key + "=" + value);
-      }
-      else {
-        _defines.push_back("-D" + key);
-      }
-    }
-  }
-
-  std::vector<std::string> Configuration::getClangArgs() const {
-    std::vector<std::string> args;
-    if (!_sourceType.empty()) {
-      args.push_back("-x");
-      args.push_back(_sourceType);
-    }
-    if (!_sysroot.empty()) {
-      args.push_back("-isysroot");
-      args.push_back(_sysroot);
-    }
-    args.insert(args.end(), _searchPaths.begin(), _searchPaths.end());
-    args.insert(args.end(), _defines.begin(), _defines.end());
-    return args;
-  }
-
-  namespace {
-    std::map<std::string, std::string> sourceTypeMap;
-    typedef std::map<std::string, std::string>::iterator SourceTypeMapIterator;
-
-    void initSourceTypeMap() {
-      if (!sourceTypeMap.empty()) {
-        return;
-      }
-
-      std::string c = "c";
-      std::string cxx = "c++";
-      std::string objc = "objective-c";
-      std::string objcxx = "objective-c++";
-      //std::string c_header = "c-header";
-      std::string cxx_header = "c++-header";
-      //std::string objc_header = "objective-c-header";
-      std::string objcxx_header = "objective-c++-header";
-
-      sourceTypeMap.insert(std::make_pair("c", c));
-      sourceTypeMap.insert(std::make_pair("cpp", cxx));
-      sourceTypeMap.insert(std::make_pair("cc", cxx));
-      sourceTypeMap.insert(std::make_pair("m", objc));
-      sourceTypeMap.insert(std::make_pair("mm", objcxx));
-      sourceTypeMap.insert(std::make_pair("h", objcxx_header));
-      sourceTypeMap.insert(std::make_pair("hpp", cxx_header));
-      sourceTypeMap.insert(std::make_pair("inl", cxx_header));
+    else {
+      _defines.push_back("-D" + key);
     }
   }
+}
 
-  std::string getSourceTypeForFileName(const std::string &fileName) {
-    if (fileName.empty()) {
-      return "";
-    }
+std::vector<std::string> Configuration::getClangArgs() const
+{
+  std::vector<std::string> args;
+  if (!_sourceType.empty()) {
+    args.push_back("-x");
+    args.push_back(_sourceType);
+  }
+  if (!_sysroot.empty()) {
+    args.push_back("-isysroot");
+    args.push_back(_sysroot);
+  }
+  args.insert(args.end(), _searchPaths.begin(), _searchPaths.end());
+  args.insert(args.end(), _defines.begin(), _defines.end());
+  return args;
+}
 
-    size_t index = fileName.rfind('.');
-    if (index == std::string::npos) {
-      return "";
-    }
+namespace {
 
-    std::string extension = fileName.substr(index + 1);
-    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+std::map<std::string, std::string> sourceTypeMap;
+typedef std::map<std::string, std::string>::iterator SourceTypeMapIterator;
 
-    initSourceTypeMap();
-    SourceTypeMapIterator it = sourceTypeMap.find(extension);
-    if (it != sourceTypeMap.end()) {
-      return it->second;
-    }
+void initSourceTypeMap()
+{
+  if (!sourceTypeMap.empty()) {
+    return;
+  }
 
+  std::string c = "c";
+  std::string cxx = "c++";
+  std::string objc = "objective-c";
+  std::string objcxx = "objective-c++";
+  //std::string c_header = "c-header";
+  std::string cxx_header = "c++-header";
+  //std::string objc_header = "objective-c-header";
+  std::string objcxx_header = "objective-c++-header";
+
+  sourceTypeMap.insert(std::make_pair("c", c));
+  sourceTypeMap.insert(std::make_pair("cpp", cxx));
+  sourceTypeMap.insert(std::make_pair("cc", cxx));
+  sourceTypeMap.insert(std::make_pair("m", objc));
+  sourceTypeMap.insert(std::make_pair("mm", objcxx));
+  sourceTypeMap.insert(std::make_pair("h", objcxx_header));
+  sourceTypeMap.insert(std::make_pair("hpp", cxx_header));
+  sourceTypeMap.insert(std::make_pair("inl", cxx_header));
+}
+
+} // end namespace
+
+std::string getSourceTypeForFileName(const std::string &fileName)
+{
+  if (fileName.empty()) {
     return "";
   }
 
-  namespace {
-    void recursivelySearchSourceFiles(std::vector<std::string> &sourceFiles, const std::string &directory) {
-      if (directory.empty()) {
-        return;
-      }
-
-      DIR *dir = opendir(directory.c_str());
-      if (dir == NULL) {
-        return;
-      }
-
-      while (true) {
-        struct dirent *ent = readdir(dir);
-        if (ent == NULL) {
-          break;
-        }
-
-        if (ent->d_type & DT_REG) {
-          std::string fullname = directory + "/" + ent->d_name;
-          if (!getSourceTypeForFileName(fullname).empty()) {
-            sourceFiles.push_back(fullname);
-          }
-        }
-        else if (ent->d_type & DT_DIR) {
-          if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-            std::string childDir = directory + "/" + ent->d_name;
-            recursivelySearchSourceFiles(sourceFiles, childDir);
-          }
-        }
-      }
-
-      closedir(dir);
-    }
+  size_t index = fileName.rfind('.');
+  if (index == std::string::npos) {
+    return "";
   }
 
-  std::vector<std::string> recursivelySearchSourceFiles(const std::string &directory) {
-    std::vector<std::string> sourceFiles;
-    recursivelySearchSourceFiles(sourceFiles, directory);
-    return sourceFiles;
+  std::string extension = fileName.substr(index + 1);
+  std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+
+  initSourceTypeMap();
+  SourceTypeMapIterator it = sourceTypeMap.find(extension);
+  if (it != sourceTypeMap.end()) {
+    return it->second;
   }
 
-  std::string expandPath(const std::string &path) {
-    wordexp_t we;
-    std::string result;
-    if (wordexp(path.c_str(), &we, 0) == 0) {
-      if (we.we_wordc > 0) {
-        char *rp = realpath(we.we_wordv[0], NULL);
-        if (rp != NULL) {
-          result = std::string(rp);
-          free(rp);
-        }
-        else {
-          result = std::string(we.we_wordv[0]);
-        }
-      }
-      wordfree(&we);
-    }
-    return result;
-  }
-
-  std::string readFile(const std::string &fileName) {
-    std::fstream fs(fileName.c_str());
-    return std::string((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
-  }
+  return "";
 }
+
+namespace {
+
+void recursivelySearchSourceFiles(std::vector<std::string> &sourceFiles, const std::string &directory)
+{
+  if (directory.empty()) {
+    return;
+  }
+
+  DIR *dir = opendir(directory.c_str());
+  if (dir == NULL) {
+    return;
+  }
+
+  while (true) {
+    struct dirent *ent = readdir(dir);
+    if (ent == NULL) {
+      break;
+    }
+
+    if (ent->d_type & DT_REG) {
+      std::string fullname = directory + "/" + ent->d_name;
+      if (!getSourceTypeForFileName(fullname).empty()) {
+        sourceFiles.push_back(fullname);
+      }
+    }
+    else if (ent->d_type & DT_DIR) {
+      if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
+        std::string childDir = directory + "/" + ent->d_name;
+        recursivelySearchSourceFiles(sourceFiles, childDir);
+      }
+    }
+  }
+
+  closedir(dir);
+}
+
+} // end namespace
+
+std::vector<std::string> recursivelySearchSourceFiles(const std::string &directory)
+{
+  std::vector<std::string> sourceFiles;
+  recursivelySearchSourceFiles(sourceFiles, directory);
+  return sourceFiles;
+}
+
+std::string expandPath(const std::string &path)
+{
+  wordexp_t we;
+  std::string result;
+  if (wordexp(path.c_str(), &we, 0) == 0) {
+    if (we.we_wordc > 0) {
+      char *rp = realpath(we.we_wordv[0], NULL);
+      if (rp != NULL) {
+        result = std::string(rp);
+        free(rp);
+      }
+      else {
+        result = std::string(we.we_wordv[0]);
+      }
+    }
+    wordfree(&we);
+  }
+  return result;
+}
+
+std::string readFile(const std::string &fileName)
+{
+  std::fstream fs(fileName.c_str());
+  return std::string((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
+}
+
+} // end namespace objctags

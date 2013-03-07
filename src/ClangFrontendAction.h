@@ -32,17 +32,21 @@
 #include "TagInfo.h"
 
 namespace objctags {
-  class ClangFrontendAction : public clang::ASTFrontendAction {
-  private:
-    TagInfoVector *_tagInfoVector;
-  protected:
-    virtual void EndSourceFileAction();
-  public:
-    explicit ClangFrontendAction(TagInfoVector &tagInfoVector);
 
-    virtual clang::ASTConsumer *CreateASTConsumer(clang::CompilerInstance &compiler,
-                                                  llvm::StringRef file);
-  };
-}
+class ClangFrontendAction : public clang::ASTFrontendAction {
+public:
+  explicit ClangFrontendAction(TagInfoVector &tagInfoVector);
+
+  virtual clang::ASTConsumer *CreateASTConsumer(clang::CompilerInstance &compiler,
+                                                llvm::StringRef file);
+
+protected:
+  virtual void EndSourceFileAction();
+
+private:
+  TagInfoVector *_tagInfoVector;
+};
+
+} // end namespace objctags
 
 #endif /* __objctags_ClangFrontendAction_h__ */

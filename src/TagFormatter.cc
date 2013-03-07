@@ -26,26 +26,28 @@
 #include "Defines.h"
 
 namespace objctags {
-  std::string TagFormatter::header()
-  {
-    std::ostringstream os;
-    os << "!_TAG_FILE_FORMAT\t2\t/extended format/\n";
-    os << "!_TAG_FILE_SORTED\t0\t/0=unsorted, 1=sorted, 2=foldcase/\n";
-    os << "!_TAG_PROGRAM_AUTHOR\t" << OBJCTAGS_PROGRAM_AUTHOR << "\n";
-    os << "!_TAG_PROGRAM_NAME\t" << OBJCTAGS_PROGRAM_NAME << "\n";
-    os << "!_TAG_PROGRAM_URL\t" << OBJCTAGS_PROGRAM_URL << "\n";
-    os << "!_TAG_PROGRAM_VERSION\t" << OBJCTAGS_PROGRAM_VERSION << "\n";
-    return os.str();
-  }
 
-  void TagFormatter::merge(const TagInfoVector &tagInfoVector)
-  {
-    for (TagInfoConstIterator it = tagInfoVector.begin(); it != tagInfoVector.end(); it++) {
-      _stream << it->name << "\t"
-              << it->file << "\t"
-              << "/^" << it->line << "$/;\"\t"
-              << it->kind << "\t"
-              << it->scope << "\n";
-    }
+std::string TagFormatter::header()
+{
+  std::ostringstream os;
+  os << "!_TAG_FILE_FORMAT\t2\t/extended format/\n";
+  os << "!_TAG_FILE_SORTED\t0\t/0=unsorted, 1=sorted, 2=foldcase/\n";
+  os << "!_TAG_PROGRAM_AUTHOR\t" << OBJCTAGS_PROGRAM_AUTHOR << "\n";
+  os << "!_TAG_PROGRAM_NAME\t" << OBJCTAGS_PROGRAM_NAME << "\n";
+  os << "!_TAG_PROGRAM_URL\t" << OBJCTAGS_PROGRAM_URL << "\n";
+  os << "!_TAG_PROGRAM_VERSION\t" << OBJCTAGS_PROGRAM_VERSION << "\n";
+  return os.str();
+}
+
+void TagFormatter::merge(const TagInfoVector &tagInfoVector)
+{
+  for (TagInfoConstIterator it = tagInfoVector.begin(); it != tagInfoVector.end(); it++) {
+    _stream << it->name << "\t"
+            << it->file << "\t"
+            << "/^" << it->line << "$/;\"\t"
+            << it->kind << "\t"
+            << it->scope << "\n";
   }
 }
+
+} // end namespace objctags

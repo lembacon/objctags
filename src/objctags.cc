@@ -49,7 +49,8 @@ static struct option options[] = {
   { NULL, 0, NULL, 0 }
 };
 
-static void usage(void) {
+static void usage(void)
+{
   std::ostringstream os;
   os << "Usage: " << OBJCTAGS_PROGRAM_NAME << " [options] [file(s)]\n";
   os << "\n";
@@ -61,11 +62,13 @@ static void usage(void) {
   fprintf(stderr, "%s\n", os.str().c_str());
 }
 
-static void version(void) {
+static void version(void)
+{
   fprintf(stderr, "%s %s\n", OBJCTAGS_PROGRAM_NAME, OBJCTAGS_PROGRAM_VERSION);
 }
 
-static void vim_conf(void) {
+static void vim_conf(void)
+{
   printf("%s\n", objctags::tagbarConfigurations().c_str());
 }
 
@@ -76,7 +79,8 @@ struct ThreadInfo {
   std::vector<std::string> sourceFiles;
 };
 
-static void *threadMain(void *data) {
+static void *threadMain(void *data)
+{
   ThreadInfo *threadInfo = (ThreadInfo *)data;
   for (size_t i = 0; i < threadInfo->sourceFiles.size(); i++) {
     objctags::Configuration config;
@@ -96,7 +100,8 @@ static void *threadMain(void *data) {
   return NULL;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
   int ch;
   int opt_index;
   std::string file = "tags";
@@ -108,35 +113,35 @@ int main(int argc, char **argv) {
 
   while ((ch = getopt_long(argc, argv, "f:rvh", options, &opt_index)) != -1) {
     switch (ch) {
-      case 0:
-        if (opt_index == 2) {
-          vim_conf();
-          exit(EXIT_SUCCESS);
-        }
-        break;
-
-      case 'f':
-        file = optarg;
-        break;
-
-      case 'R':
-        flag_recursive = 1;
-        break;
-
-      case 'v':
-        version();
+    case 0:
+      if (opt_index == 2) {
+        vim_conf();
         exit(EXIT_SUCCESS);
+      }
+      break;
 
-      case 'h':
-        usage();
-        exit(EXIT_SUCCESS);
+    case 'f':
+      file = optarg;
+      break;
 
-      case '?':
-        usage();
-        exit(EXIT_FAILURE);
+    case 'R':
+      flag_recursive = 1;
+      break;
 
-      default:
-        abort();
+    case 'v':
+      version();
+      exit(EXIT_SUCCESS);
+
+    case 'h':
+      usage();
+      exit(EXIT_SUCCESS);
+
+    case '?':
+      usage();
+      exit(EXIT_FAILURE);
+
+    default:
+      abort();
     }
   }
 

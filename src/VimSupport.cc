@@ -30,43 +30,46 @@
 #include "Defines.h"
 
 namespace objctags {
-  std::string tagbarConfigurations() {
-    std::vector< std::pair<char, std::string> > kindScopePairs;
-    for (size_t i = 0; i < tagkinds_count; i++) {
-      std::string scopedName = getTagKindScopedName(tagkinds[i]);
-      if (!scopedName.empty()) {
-        kindScopePairs.push_back(std::make_pair(tagkinds[i], scopedName));
-      }
-    }
 
-    std::ostringstream os;
-    os << "if executable('" << OBJCTAGS_PROGRAM_NAME << "')\n";
-    os << "  let objctags_definitions = {\n";
-    os << "    \\ 'ctagsbin': '" << OBJCTAGS_PROGRAM_NAME << "',\n";
-    os << "    \\ 'ctagsargs': '-f -',\n";
-    os << "    \\ 'kinds': [\n";
-    for (size_t i = 0; i < tagkinds_count; i++) {
-      os << "      \\ '" << tagkinds[i] << ":" << getTagKindLongName(tagkinds[i]) << ((i != tagkinds_count - 1) ? "',\n" : "'\n");
+std::string tagbarConfigurations()
+{
+  std::vector< std::pair<char, std::string> > kindScopePairs;
+  for (size_t i = 0; i < tagkinds_count; i++) {
+    std::string scopedName = getTagKindScopedName(tagkinds[i]);
+    if (!scopedName.empty()) {
+      kindScopePairs.push_back(std::make_pair(tagkinds[i], scopedName));
     }
-    os << "    \\ ],\n";
-    os << "    \\ 'sro': '" << tagscope_splitter << "',\n";
-    os << "    \\ 'kind2scope': {\n";
-    for (size_t i = 0; i < kindScopePairs.size(); i++) {
-      os << "      \\ '" << kindScopePairs[i].first << "': '" << kindScopePairs[i].second << ((i != kindScopePairs.size() - 1) ? "',\n" : "'\n");
-    }
-    os << "    \\ },\n";
-    os << "    \\ 'scope2kind': {\n";
-    for (size_t i = 0; i < kindScopePairs.size(); i++) {
-      os << "      \\ '" << kindScopePairs[i].second << "': '" << kindScopePairs[i].first << ((i != kindScopePairs.size() - 1) ? "',\n" : "'\n");
-    }
-    os << "    \\ },\n";
-    os << "  \\ }\n";
-    os << "  let g:tagbar_type_c = deepcopy(objctags_definitions)\n";
-    os << "  let g:tagbar_type_cpp = deepcopy(objctags_definitions)\n";
-    os << "  let g:tagbar_type_objc = deepcopy(objctags_definitions)\n";
-    os << "  let g:tagbar_type_objcpp = deepcopy(objctags_definitions)\n";
-    os << "  unlet objctags_definitions\n";
-    os << "endif\n";
-    return os.str();
   }
+
+  std::ostringstream os;
+  os << "if executable('" << OBJCTAGS_PROGRAM_NAME << "')\n";
+  os << "  let objctags_definitions = {\n";
+  os << "    \\ 'ctagsbin': '" << OBJCTAGS_PROGRAM_NAME << "',\n";
+  os << "    \\ 'ctagsargs': '-f -',\n";
+  os << "    \\ 'kinds': [\n";
+  for (size_t i = 0; i < tagkinds_count; i++) {
+    os << "      \\ '" << tagkinds[i] << ":" << getTagKindLongName(tagkinds[i]) << ((i != tagkinds_count - 1) ? "',\n" : "'\n");
+  }
+  os << "    \\ ],\n";
+  os << "    \\ 'sro': '" << tagscope_splitter << "',\n";
+  os << "    \\ 'kind2scope': {\n";
+  for (size_t i = 0; i < kindScopePairs.size(); i++) {
+    os << "      \\ '" << kindScopePairs[i].first << "': '" << kindScopePairs[i].second << ((i != kindScopePairs.size() - 1) ? "',\n" : "'\n");
+  }
+  os << "    \\ },\n";
+  os << "    \\ 'scope2kind': {\n";
+  for (size_t i = 0; i < kindScopePairs.size(); i++) {
+    os << "      \\ '" << kindScopePairs[i].second << "': '" << kindScopePairs[i].first << ((i != kindScopePairs.size() - 1) ? "',\n" : "'\n");
+  }
+  os << "    \\ },\n";
+  os << "  \\ }\n";
+  os << "  let g:tagbar_type_c = deepcopy(objctags_definitions)\n";
+  os << "  let g:tagbar_type_cpp = deepcopy(objctags_definitions)\n";
+  os << "  let g:tagbar_type_objc = deepcopy(objctags_definitions)\n";
+  os << "  let g:tagbar_type_objcpp = deepcopy(objctags_definitions)\n";
+  os << "  unlet objctags_definitions\n";
+  os << "endif\n";
+  return os.str();
 }
+
+} // end namespace objctags

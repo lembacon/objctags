@@ -25,79 +25,83 @@
 #include "TagInfo.h"
 
 namespace objctags {
-  std::string getTagKindScopedName(const char tagkind) {
-    switch (tagkind) {
-      case tagkind_enum:
-        return "enum";
-      case tagkind_namespace:
-        return "namespace";
-      case tagkind_class:
-        return "class";
-      case tagkind_struct:
-        return "struct";
-      case tagkind_union:
-        return "union";
 
-      case tagkind_interface:
-        return "interface";
-      case tagkind_implementation:
-        return "implementation";
-      case tagkind_category:
-        return "category";
-      case tagkind_category_impl:
-        return "categoryimpl";
-      case tagkind_protocol:
-        return "protocol";
+std::string getTagKindScopedName(const char tagkind)
+{
+  switch (tagkind) {
+  case tagkind_enum:
+    return "enum";
+  case tagkind_namespace:
+    return "namespace";
+  case tagkind_class:
+    return "class";
+  case tagkind_struct:
+    return "struct";
+  case tagkind_union:
+    return "union";
 
-      default:
-        return "";
-    }
-  }
+  case tagkind_interface:
+    return "interface";
+  case tagkind_implementation:
+    return "implementation";
+  case tagkind_category:
+    return "category";
+  case tagkind_category_impl:
+    return "categoryimpl";
+  case tagkind_protocol:
+    return "protocol";
 
-  std::string getTagKindLongName(const char tagkind) {
-    switch (tagkind) {
-      case tagkind_define:
-        return "macros";
-      case tagkind_typedef:
-        return "typedefs";
-      case tagkind_prototype:
-        return "prototypes";
-      case tagkind_variable:
-        return "variables";
-      case tagkind_enum:
-        return "enums";
-      case tagkind_enum_member:
-        return "enumerators";
-      case tagkind_namespace:
-        return "namespaces";
-      case tagkind_class:
-        return "classes";
-      case tagkind_struct:
-        return "structs";
-      case tagkind_union:
-        return "unions";
-      case tagkind_function:
-        return "functions";
-      case tagkind_member:
-        return "members";
-
-      case tagkind_interface:
-        return "interfaces";
-      case tagkind_implementation:
-        return "implementations";
-      case tagkind_category:
-        return "categories";
-      case tagkind_category_impl:
-        return "categoryimpls";
-      case tagkind_protocol:
-        return "protocols";
-      case tagkind_property:
-        return "properties";
-      case tagkind_method:
-        return "methods";
-
-      default:
-        return "";
-    }
+  default:
+    return "";
   }
 }
+
+std::string getTagKindLongName(const char tagkind)
+{
+  switch (tagkind) {
+  case tagkind_define:
+    return "macros";
+  case tagkind_typedef:
+    return "typedefs";
+  case tagkind_prototype:
+    return "prototypes";
+  case tagkind_variable:
+    return "variables";
+  case tagkind_enum:
+    return "enums";
+  case tagkind_enum_member:
+    return "enumerators";
+  case tagkind_namespace:
+    return "namespaces";
+  case tagkind_class:
+    return "classes";
+  case tagkind_struct:
+    return "structs";
+  case tagkind_union:
+    return "unions";
+  case tagkind_function:
+    return "functions";
+  case tagkind_member:
+    return "members";
+
+  case tagkind_interface:
+    return "interfaces";
+  case tagkind_implementation:
+    return "implementations";
+  case tagkind_category:
+    return "categories";
+  case tagkind_category_impl:
+    return "categoryimpls";
+  case tagkind_protocol:
+    return "protocols";
+  case tagkind_property:
+    return "properties";
+  case tagkind_method:
+    return "methods";
+
+  default:
+    return "";
+  }
+}
+
+} // end namespace objctags

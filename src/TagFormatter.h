@@ -29,17 +29,21 @@
 #include "TagInfo.h"
 
 namespace objctags {
-  class TagFormatter {
-  private:
-    std::ostringstream _stream;
-  public:
-    static std::string header();
-    void merge(const TagInfoVector &tagInfoVector);
 
-    std::string str() const {
-      return header() + _stream.str();
-    }
-  };
-}
+class TagFormatter {
+public:
+  static std::string header();
+  void merge(const TagInfoVector &tagInfoVector);
+
+  std::string str() const
+  {
+    return header() + _stream.str();
+  }
+
+private:
+  std::ostringstream _stream;
+};
+
+} // end namespace objctags
 
 #endif /* __objctags_TagFormatter_h__ */
